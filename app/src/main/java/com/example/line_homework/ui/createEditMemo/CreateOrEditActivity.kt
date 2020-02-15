@@ -3,8 +3,10 @@ package com.example.line_homework.ui.createEditMemo
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 
 import android.widget.EditText
+import android.widget.GridView
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,8 @@ class CreateOrEditActivity : AppCompatActivity() {
     private lateinit var et_contents: EditText
     private lateinit var iv_addImage: ImageView
     private lateinit var memo: Memo
+    private lateinit var imageAdapter: ImageAdapter
+    private lateinit var gridView: GridView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
@@ -51,11 +55,26 @@ class CreateOrEditActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            // Get a list of picked images
+            val images = ImagePicker.getImages(data)
+            for(image in images){
+                imageAdapter.addImage(image.path)
+            }
+            Log.d("picked", images.toString())
+        }
+    }
+
     fun initView() {
         fab_done = createOrEditActivity_fab_done
         et_title = createOrEditActivity_et_title
         et_contents = createOrEditActivity_et_contents
         iv_addImage = createOrEditActivity_iv_addImage
+        imageAdapter = ImageAdapter(this)
+        gridView = createOrEditActivity_gridView
+        gridView.adapter = imageAdapter
     }
 
     fun displayOriginalMemo() {
@@ -63,20 +82,20 @@ class CreateOrEditActivity : AppCompatActivity() {
         et_contents.setText(memo.contents)
     }
 
-    fun pickPhoto(){
+    fun pickPhoto() {
         ImagePicker.create(this)
-                .returnMode(ReturnMode.NONE) // set whether pick and / or camera action should return immediate result or not.
-                .folderMode(true) // folder mode (false by default)
-                .toolbarFolderTitle("Folder") // folder selection title
-                .toolbarImageTitle("Tap to select") // image selection title
-                .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
-                .includeVideo(true) // Show video on image picker
-                .multi()
-                .limit(10) // max images can be selected (99 by default)
-                .showCamera(true) // show camera or not (true by default)
-                .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
-                .enableLog(false) // disabling log
-                .start() // start image picker activity with request code
+            .returnMode(ReturnMode.NONE) // set whether pick and / or camera action should return immediate result or not.
+            .folderMode(true) // folder mode (false by default)
+            .toolbarFolderTitle("Folder") // folder selection title
+            .toolbarImageTitle("Tap to select") // image selection title
+            .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
+            .includeVideo(true) // Show video on image picker
+            .multi()
+            .limit(10) // max images can be selected (99 by default)
+            .showCamera(true) // show camera or not (true by default)
+            .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
+            .enableLog(false) // disabling log
+            .start() // start image picker activity with request code
     }
 
     fun validateTitleAndContents(): Boolean {

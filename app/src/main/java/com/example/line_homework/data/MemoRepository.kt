@@ -1,7 +1,6 @@
 package com.example.line_homework.data
 
 import android.app.Application
-//import android.arch.lifecycle.LiveData
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

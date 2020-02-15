@@ -20,6 +20,7 @@
         android:hint="contents" />
 
     <ImageView
+        android:layout_centerHorizontal="true"
         android:id="@+id/createOrEditActivity_iv_addImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,6 +35,18 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:src="@drawable/baseline_done_white_18dp" />
+
+    <GridView
+        android:id="@+id/createOrEditActivity_gridView"
+        android:layout_below="@id/createOrEditActivity_iv_addImage"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_margin="10dp"
+        android:columnWidth="100dp"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:numColumns="auto_fit">
+    </GridView>
 
 
 </RelativeLayout>
