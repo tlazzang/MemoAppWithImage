@@ -13,11 +13,11 @@ import java.io.Serializable
         onDelete = ForeignKey.CASCADE)))
 data class Image (
     @PrimaryKey(autoGenerate = true)
-    var id: Long,
+    var id: Long?,
 
     @ColumnInfo(name = "memoId")
-    var memoId: Int,
+    var memoId: Long,
 
-    @ColumnInfo(name = "fileName")
-    var fileName: Int?
+    @ColumnInfo(name = "imagePath")
+    var imagePath: String?
 ): Serializable

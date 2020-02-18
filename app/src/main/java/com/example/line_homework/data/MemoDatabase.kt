@@ -18,7 +18,7 @@ abstract class MemoDatabase : RoomDatabase() {
                 synchronized(MemoDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context,
                         MemoDatabase::class.java,
-                        "memo_db")
+                        "memoDb")
                         .build()
                 }
             }

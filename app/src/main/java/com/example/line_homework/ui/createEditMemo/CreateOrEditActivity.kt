@@ -1,5 +1,6 @@
 package com.example.line_homework.ui.createEditMemo
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.EditText
 import android.widget.GridView
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.features.ReturnMode
@@ -23,9 +25,11 @@ class CreateOrEditActivity : AppCompatActivity() {
     private lateinit var et_title: EditText
     private lateinit var et_contents: EditText
     private lateinit var iv_addImage: ImageView
+    private lateinit var iv_addImageFromUrl: ImageView
     private lateinit var memo: Memo
     private lateinit var imageAdapter: ImageAdapter
     private lateinit var gridView: GridView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
@@ -33,25 +37,6 @@ class CreateOrEditActivity : AppCompatActivity() {
         if (intent != null && intent.hasExtra("memo")) {
             memo = intent.getSerializableExtra("memo") as Memo
             displayOriginalMemo()
-        }
-        iv_addImage.setOnClickListener {
-            pickPhoto()
-        }
-        fab_done.setOnClickListener {
-            if (validateTitleAndContents()) {
-                val title = et_title.text.toString()
-                val contents = et_contents.text.toString()
-                if (intent != null && intent.hasExtra("memo")) {
-                    memo.title = title
-                    memo.contents = contents
-                } else {
-                    memo = Memo(id = null, title = title, contents = contents)
-                }
-                val intent = Intent()
-                intent.putExtra("memo", memo)
-                setResult(RESULT_OK, intent)
-                finish()
-            }
         }
     }
 
@@ -72,9 +57,34 @@ class CreateOrEditActivity : AppCompatActivity() {
         et_title = createOrEditActivity_et_title
         et_contents = createOrEditActivity_et_contents
         iv_addImage = createOrEditActivity_iv_addImage
+        iv_addImageFromUrl = createOrEditActivity_iv_addImageFromUrl
         imageAdapter = ImageAdapter(this)
         gridView = createOrEditActivity_gridView
         gridView.adapter = imageAdapter
+
+        iv_addImage.setOnClickListener {
+            pickPhoto()
+        }
+        iv_addImageFromUrl.setOnClickListener {
+            showInputUrlDialog()
+        }
+        fab_done.setOnClickListener {
+            if (validateTitleAndContents()) {
+                val title = et_title.text.toString()
+                val contents = et_contents.text.toString()
+                if (intent != null && intent.hasExtra("memo")) {
+                    memo.title = title
+                    memo.contents = contents
+                } else {
+                    memo = Memo(id = null, title = title, contents = contents)
+                }
+                val intent = Intent()
+                intent.putExtra("imagePathList", imageAdapter.getList())
+                intent.putExtra("memo", memo)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
     }
 
     fun displayOriginalMemo() {
@@ -96,6 +106,21 @@ class CreateOrEditActivity : AppCompatActivity() {
             .imageDirectory("Camera") // directory name for captured image  ("Camera" folder by default)
             .enableLog(false) // disabling log
             .start() // start image picker activity with request code
+    }
+
+    fun loadImageFromUrl(url: String){
+        imageAdapter.addImage(url)
+    }
+
+    fun showInputUrlDialog(){
+        val dialog = AlertDialog.Builder(this)
+        val et_url = EditText(this)
+        dialog.setTitle("URL로 이미지 추가")
+                .setMessage("URL을 입력하세요")
+                .setView(et_url)
+                .setPositiveButton("확인"){dialog, id -> loadImageFromUrl(et_url.text.toString().trim())}
+                .create()
+        dialog.show()
     }
 
     fun validateTitleAndContents(): Boolean {

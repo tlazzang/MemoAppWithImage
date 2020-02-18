@@ -17,10 +17,25 @@ class MemoRepository(application: Application) {
         memoDao = database!!.memoDao()
         allMemos = memoDao.getAllMemoList()
     }
+    fun insertMemo(memo: Memo): Long{
+        var memoId: Long = -1
+        runBlocking {
+            this.launch(Dispatchers.IO) {
+                memoId = memoDao.insertMemo(memo)
+            }
+        }
+        return memoId
+    }
 
-    fun insertMemo(memo: Memo) = runBlocking {
+//    fun insertMemo(memo: Memo) = runBlocking {
+//        this.launch(Dispatchers.IO) {
+//            memoDao.insertMemo(memo)
+//        }
+//    }
+
+    fun insertImage(image: Image) = runBlocking {
         this.launch(Dispatchers.IO) {
-            memoDao.insertMemo(memo)
+            memoDao.insertImage(image)
         }
     }
 
@@ -38,6 +53,10 @@ class MemoRepository(application: Application) {
         }
     }
 
+
+    fun getAllMemoImages(memoId: Long): LiveData<List<Image>> {
+        return memoDao.getAllMemoImages(memoId)
+    }
     fun getAllMemoList(): LiveData<List<Memo>> {
         return allMemos
     }

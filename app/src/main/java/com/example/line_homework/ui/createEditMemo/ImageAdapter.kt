@@ -1,6 +1,7 @@
 package com.example.line_homework.ui.createEditMemo
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.line_homework.R
 import kotlinx.android.synthetic.main.image_list_item.view.*
 
-class ImageAdapter(val context: Context): BaseAdapter() {
+class ImageAdapter(val context: Context) : BaseAdapter() {
+
     private val imagePathList: ArrayList<String> = ArrayList()
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = LayoutInflater.from(context).inflate(R.layout.image_list_item, parent, false)
         val iv_image = view.imageListItem_iv_image
@@ -41,12 +44,17 @@ class ImageAdapter(val context: Context): BaseAdapter() {
         return imagePathList.size
     }
 
-    fun addImage(imagePath: String){
+    fun getList(): ArrayList<String>{
+        return imagePathList
+    }
+
+    fun addImage(imagePath: String) {
+        Log.d("ImageAdapter", imagePath)
         imagePathList.add(imagePath)
         notifyDataSetChanged()
     }
 
-    fun removeImageAtPosition(position: Int){
+    fun removeImageAtPosition(position: Int) {
         imagePathList.removeAt(position)
         notifyDataSetChanged()
     }

@@ -19,13 +19,30 @@
         android:layout_marginTop="8dp"
         android:hint="contents" />
 
-    <ImageView
-        android:layout_centerHorizontal="true"
-        android:id="@+id/createOrEditActivity_iv_addImage"
+    <LinearLayout
+        android:id="@+id/createOrEditActivity_linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/createOrEditActivity_et_contents"
-        android:background="@drawable/outline_add_photo_alternate_black_48dp" />
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/createOrEditActivity_iv_addImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/createOrEditActivity_et_contents"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/outline_add_photo_alternate_black_48dp" />
+
+        <ImageView
+            android:id="@+id/createOrEditActivity_iv_addImageFromUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/createOrEditActivity_iv_addImage"
+            android:background="@drawable/outline_cloud_download_black_48dp" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/createOrEditActivity_fab_done"
@@ -38,15 +55,14 @@
 
     <GridView
         android:id="@+id/createOrEditActivity_gridView"
-        android:layout_below="@id/createOrEditActivity_iv_addImage"
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:layout_below="@id/createOrEditActivity_linearLayout"
         android:layout_margin="10dp"
         android:columnWidth="100dp"
         android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:numColumns="auto_fit">
-    </GridView>
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"></GridView>
 
 
 </RelativeLayout>
