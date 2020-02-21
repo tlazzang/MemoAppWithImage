@@ -17,13 +17,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.example.line_homework.R
 import com.example.line_homework.data.Image
-import com.example.line_homework.ui.memoList.MemoAdapter
 import kotlinx.android.synthetic.main.image_list_item.view.*
 
 class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.ImageRemoveClickListener) : BaseAdapter() {
 
     private var imageList: ArrayList<Image> = ArrayList()
     private val listener = imageRemoveClickListener
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = LayoutInflater.from(context).inflate(R.layout.image_list_item, parent, false)
         val iv_image = view.imageListItem_iv_image
@@ -46,7 +46,6 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
         val iv_remove = view.imageListItem_iv_remove
         iv_remove.setOnClickListener {
             listener.onImageRemoveClick(imageList[position])
-            removeImageAtPosition(position)
         }
         return view
     }

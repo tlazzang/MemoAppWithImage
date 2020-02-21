@@ -17,6 +17,7 @@ import androidx.viewpager.widget.ViewPager
 import com.example.line_homework.R
 import com.example.line_homework.data.Image
 import com.example.line_homework.data.Memo
+import com.example.line_homework.ui.circleIndicator.CircleIndicator
 import com.example.line_homework.ui.createEditMemo.CreateOrEditActivity
 import com.example.line_homework.ui.memoList.MemoViewModel
 import com.example.line_homework.util.Constants
@@ -27,6 +28,7 @@ class MemoDetailActivity : AppCompatActivity() {
     private lateinit var tv_title: TextView
     private lateinit var tv_contents: TextView
     private lateinit var viewPager: ViewPager
+    private lateinit var indicator: CircleIndicator
     private lateinit var memo: Memo
     private lateinit var viewModel: MemoViewModel
 
@@ -34,15 +36,40 @@ class MemoDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_detail)
-        memo = intent.getSerializableExtra("memo") as Memo
+        memo = intent.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
         initView()
+        bindMemo()
+        observeLiveData()
+    }
+
+    fun initView() {
+        tv_title = memoDetailActivity_tv_title
+        tv_contents = memoDetailActivity_tv_contents
+        viewPager = memoDetailActivity_imageViewPager
+        viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                indicator.selectDot(position)
+            }
+        })
+        indicator = memoDetailActivity_indicator
+        viewModel = ViewModelProviders.of(this).get(MemoViewModel::class.java)
+    }
+
+    fun observeLiveData(){
         memo.id?.let {
             viewModel.getAllMemoImages(it).observe(this, Observer {
                 val list: MutableList<String> = ArrayList()
                 for (image in it) {
                     image.imagePath?.let { it1 -> list.add(it1) }
                 }
-                val adapter = ImageAdapterForViewPager(list, "", this)
+                val adapter = ImageAdapterForViewPager(list, this)
+                indicator.createDotPanel(it.size, R.drawable.indicator_dot_off, R.drawable.indicator_dot_on, 0)
                 viewPager.adapter = adapter
                 adapter.setResourceReadyListener(object : ImageAdapterForViewPager.OnResourceReadyListener {
                     override fun onResourceReady() {
@@ -54,14 +81,6 @@ class MemoDetailActivity : AppCompatActivity() {
                 Log.d("MemoDetailActivity", it.toString())
             })
         }
-        bindMemo()
-    }
-
-    fun initView() {
-        tv_title = memoDetailActivity_tv_title
-        tv_contents = memoDetailActivity_tv_contents
-        viewPager = memoDetailActivity_imageViewPager
-        viewModel = ViewModelProviders.of(this).get(MemoViewModel::class.java)
     }
 
     fun bindMemo() {

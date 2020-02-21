@@ -27,12 +27,6 @@ class MemoRepository(application: Application) {
         return memoId
     }
 
-//    fun insertMemo(memo: Memo) = runBlocking {
-//        this.launch(Dispatchers.IO) {
-//            memoDao.insertMemo(memo)
-//        }
-//    }
-
     fun updateMemo(memo: Memo) = runBlocking {
         this.launch(Dispatchers.IO) {
             memoDao.updateMemo(memo)
@@ -68,7 +62,6 @@ class MemoRepository(application: Application) {
             }
         }
     }
-
 
     fun getAllMemoImages(memoId: Long): LiveData<List<Image>> {
         return memoDao.getAllMemoImages(memoId)

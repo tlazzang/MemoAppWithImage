@@ -19,6 +19,7 @@ import com.example.line_homework.R
 import com.example.line_homework.data.Image
 import com.example.line_homework.data.Memo
 import com.example.line_homework.ui.memoList.MemoViewModel
+import com.example.line_homework.util.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_create_or_edit.*
 
@@ -39,14 +40,10 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
         initView()
-        if (intent != null && intent.hasExtra("memo")) {
-            memo = intent.getSerializableExtra("memo") as Memo
+        if (isNowEditing()) {
+            getMemoFromIntent()
             displayOriginalMemo()
-            memo.id?.let {
-                viewModel.getAllMemoImages(it).observe(this, Observer {
-                    imageAdapter.setImageList(it)
-                })
-            }
+            observeLiveData()
         }
     }
 
@@ -56,10 +53,27 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
             // Get a list of picked images
             val images = ImagePicker.getImages(data)
             for (image in images) {
+                //memoId는 MemoListActivity에서 memo를 db에 저장한 후 리턴되는 id값을 이용해서 다시 세팅함.
                 imageAdapter.addImage(Image(null, -1, image.path))
             }
             Log.d("picked", images.toString())
         }
+    }
+
+    fun getMemoFromIntent(){
+        memo = intent.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
+    }
+
+    fun observeLiveData() {
+        memo.id?.let {
+            viewModel.getAllMemoImages(it).observe(this, Observer {
+                imageAdapter.setImageList(it)
+            })
+        }
+    }
+
+    fun isNowEditing(): Boolean {
+        return intent != null && intent.hasExtra(Constants.PUT_EXTRA_MEMO_KEY)
     }
 
     fun initView() {
@@ -79,25 +93,25 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
         iv_addImageFromUrl.setOnClickListener {
             showInputUrlDialog()
         }
+
         fab_done.setOnClickListener {
             val title = et_title.text.toString()
             val contents = et_contents.text.toString()
             if (viewModel.validateMemo(title, contents)) {
+                val intent = Intent()
                 if (imageAdapter.getList().size > 0) {
+                    intent.putExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY, imageAdapter.getList())
                     thumbnailPath = imageAdapter.getList()[0].imagePath
                 }
-                if (intent != null && intent.hasExtra("memo")) {
+
+                if (isNowEditing()) { //수정인 경우
                     memo.title = title
                     memo.contents = contents
                     memo.thumbnailPath = thumbnailPath
-                } else {
+                } else { //새로운 메모인 경우
                     memo = Memo(id = null, title = title, contents = contents, thumbnailPath = thumbnailPath)
                 }
-                val intent = Intent()
-                if (imageAdapter.getList().size > 0) {
-                    intent.putExtra("imagePathList", imageAdapter.getList())
-                }
-                intent.putExtra("memo", memo)
+                intent.putExtra(Constants.PUT_EXTRA_MEMO_KEY, memo)
                 setResult(RESULT_OK, intent)
                 finish()
             } else {
@@ -128,7 +142,7 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
     }
 
     fun loadImageFromUrl(url: String) {
-        imageAdapter.addImage(Image(null, memo.id!!, url))
+        imageAdapter.addImage(Image(null, -1, url))
     }
 
     fun showInputUrlDialog() {

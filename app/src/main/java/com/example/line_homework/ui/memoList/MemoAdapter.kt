@@ -13,7 +13,8 @@ import com.example.line_homework.R
 import com.example.line_homework.data.Memo
 import kotlinx.android.synthetic.main.memo_list_item.view.*
 
-class MemoAdapter(val context: Context, memoClickListener: MemoClickListener): RecyclerView.Adapter<MemoAdapter.ViewHolder>(){
+class MemoAdapter(val context: Context, memoClickListener: MemoClickListener) :
+    RecyclerView.Adapter<MemoAdapter.ViewHolder>() {
 
     private var memoList: List<Memo> = ArrayList()
     private val listener = memoClickListener
@@ -31,32 +32,40 @@ class MemoAdapter(val context: Context, memoClickListener: MemoClickListener): R
         p0.bind(memoList[p1])
     }
 
-    fun setMemoList(memoList: List<Memo>){
+    fun setMemoList(memoList: List<Memo>) {
         this.memoList = memoList
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivThumbnail = view.memoListItem_iv_thumbnail
         val tvTitle = view.memoListItem_tv_title
         val tvContents = view.memoListItem_tv_contents
 
-        fun bind(memo: Memo){
+        fun bind(memo: Memo) {
             val option = RequestOptions().centerCrop().transform(RoundedCorners(36))
             Glide
-                    .with(context)
-                    .load(memo.thumbnailPath)
-                    .apply(option)
-                    .into(ivThumbnail)
-            tvTitle.text = memo.title
-            tvContents.text = memo.contents
+                .with(context)
+                .load(memo.thumbnailPath)
+                .apply(option)
+                .into(ivThumbnail)
+            if (memo.title.length > 15) {
+                tvTitle.text = memo.title.slice(0..15) + "..."
+            } else {
+                tvTitle.text = memo.title
+            }
+            if (memo.contents.length > 15) {
+                tvContents.text = memo.contents.slice(0..15) + "..."
+            } else {
+                tvContents.text = memo.contents
+            }
             itemView.setOnClickListener {
                 listener.onMemoClick(memo, ivThumbnail)
             }
         }
     }
 
-    interface MemoClickListener{
+    interface MemoClickListener {
         fun onMemoClick(memo: Memo, imageView: ImageView)
     }
 }

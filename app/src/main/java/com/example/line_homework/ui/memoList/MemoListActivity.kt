@@ -27,11 +27,6 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
     private lateinit var fab_addMemo: FloatingActionButton
     private lateinit var viewModel: MemoViewModel
 
-    companion object {
-        val CREATE_MEMO_REQUEST_CODE = 100
-        val MEMO_DETAIL_REQUEST_CODE = 101
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_list)
@@ -39,7 +34,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = memoAdapter
         fab_addMemo.setOnClickListener {
-            startActivityForResult(Intent(this, CreateOrEditActivity::class.java), CREATE_MEMO_REQUEST_CODE)
+            startActivityForResult(Intent(this, CreateOrEditActivity::class.java), Constants.CREATE_MEMO_REQUEST_CODE)
         }
 
         viewModel.getAllMemoList().observe(this, Observer {
@@ -51,25 +46,27 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            CREATE_MEMO_REQUEST_CODE -> {
+            Constants.CREATE_MEMO_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val memo = data?.getSerializableExtra("memo") as Memo
+                    val memo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
                     val memoId = viewModel.insertMemo(memo)
                     Log.d("MemoListActivity", memoId.toString())
-                    val imageList = data?.getStringArrayListExtra("imagePathList") as ArrayList<Image>
-                    for(image in imageList){
-                        viewModel.insertImage(Image(image.id, memoId, image.imagePath))
-                        Log.d("MemoListActivity", image.imagePath)
+                    if (data.hasExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY)) {
+                        val imageList = data?.getStringArrayListExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY) as ArrayList<Image>
+                        for (image in imageList) {
+                            viewModel.insertImage(Image(image.id, memoId, image.imagePath))
+                            Log.d("MemoListActivity", image.imagePath)
+                        }
                     }
                 }
             }
 
-            MEMO_DETAIL_REQUEST_CODE -> {
+            Constants.MEMO_DETAIL_REQUEST_CODE -> {
                 if (resultCode == Constants.RESULT_EDIT) {
-                    val memo = data?.getSerializableExtra("memo") as Memo
-                    if(data.hasExtra("imagePathList")){
-                        val imageList = data?.getSerializableExtra("imagePathList") as ArrayList<Image>
-                        for(image in imageList){
+                    val memo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
+                    if (data.hasExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY)) {
+                        val imageList = data?.getSerializableExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY) as ArrayList<Image>
+                        for (image in imageList) {
                             viewModel.insertImage(Image(image.id, memo.id!!, image.imagePath))
                             Log.d("MemoListActivity", image.imagePath)
                         }
@@ -77,7 +74,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
                     viewModel.updateMemo(memo)
                 }
                 if (resultCode == Constants.RESULT_DELETE) {
-                    val memo = data?.getSerializableExtra("memo") as Memo
+                    val memo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
                     viewModel.deleteMemo(memo)
                 }
             }
@@ -94,7 +91,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
 
     override fun onMemoClick(memo: Memo, imageView: ImageView) {
         val intent = Intent(this, MemoDetailActivity::class.java)
-        intent.putExtra("memo", memo)
-        startActivityForResult(intent, MEMO_DETAIL_REQUEST_CODE)
+        intent.putExtra(Constants.PUT_EXTRA_MEMO_KEY, memo)
+        startActivityForResult(intent, Constants.MEMO_DETAIL_REQUEST_CODE)
     }
 }

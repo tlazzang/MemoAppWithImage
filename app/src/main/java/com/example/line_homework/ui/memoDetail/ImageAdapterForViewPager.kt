@@ -18,7 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.line_homework.R
 import kotlinx.android.synthetic.main.image_list_item_viewpager.view.*
 
-class ImageAdapterForViewPager(val imageUrlList: MutableList<String>, val imageTransitionName: String = "", val context: Context) : PagerAdapter() {
+class ImageAdapterForViewPager(val imageUrlList: MutableList<String>, val context: Context) : PagerAdapter() {
 
     //클릭 인터페이스 정의
     interface OnResourceReadyListener {
@@ -36,9 +36,6 @@ class ImageAdapterForViewPager(val imageUrlList: MutableList<String>, val imageT
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view: View = LayoutInflater.from(context).inflate(R.layout.image_list_item_viewpager, null, false)
-        if (position == 0) {
-//            view.imageList_iv_thumbnail.transitionName = imageTransitionName
-        }
         val option = RequestOptions().centerCrop().transform(RoundedCorners(38))
         Glide
                 .with(context)
