@@ -19,5 +19,5 @@ data class Image (
     var memoId: Long,
 
     @ColumnInfo(name = "imagePath")
-    var imagePath: String?
+    var imagePath: String
 ): Serializable

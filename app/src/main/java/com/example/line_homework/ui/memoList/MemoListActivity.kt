@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -55,10 +56,10 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
                     val memo = data?.getSerializableExtra("memo") as Memo
                     val memoId = viewModel.insertMemo(memo)
                     Log.d("MemoListActivity", memoId.toString())
-                    val imagePathList = data?.getStringArrayListExtra("imagePathList")
-                    for(path in imagePathList){
-                        viewModel.insertImage(Image(null, memoId, path))
-                        Log.d("MemoListActivity", path)
+                    val imageList = data?.getStringArrayListExtra("imagePathList") as ArrayList<Image>
+                    for(image in imageList){
+                        viewModel.insertImage(Image(image.id, memoId, image.imagePath))
+                        Log.d("MemoListActivity", image.imagePath)
                     }
                 }
             }
@@ -66,6 +67,13 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
             MEMO_DETAIL_REQUEST_CODE -> {
                 if (resultCode == Constants.RESULT_EDIT) {
                     val memo = data?.getSerializableExtra("memo") as Memo
+                    if(data.hasExtra("imagePathList")){
+                        val imageList = data?.getSerializableExtra("imagePathList") as ArrayList<Image>
+                        for(image in imageList){
+                            viewModel.insertImage(Image(image.id, memo.id!!, image.imagePath))
+                            Log.d("MemoListActivity", image.imagePath)
+                        }
+                    }
                     viewModel.updateMemo(memo)
                 }
                 if (resultCode == Constants.RESULT_DELETE) {
@@ -79,12 +87,12 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
 
     fun initView() {
         recyclerView = memoListActivity_recyclerView
-        memoAdapter = MemoAdapter(this)
+        memoAdapter = MemoAdapter(this, this)
         fab_addMemo = memoListActivity_fab
         viewModel = ViewModelProviders.of(this).get(MemoViewModel::class.java)
     }
 
-    override fun onMemoClick(memo: Memo) {
+    override fun onMemoClick(memo: Memo, imageView: ImageView) {
         val intent = Intent(this, MemoDetailActivity::class.java)
         intent.putExtra("memo", memo)
         startActivityForResult(intent, MEMO_DETAIL_REQUEST_CODE)

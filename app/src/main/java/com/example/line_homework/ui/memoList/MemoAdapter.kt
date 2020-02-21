@@ -1,14 +1,19 @@
 package com.example.line_homework.ui.memoList
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.line_homework.R
 import com.example.line_homework.data.Memo
 import kotlinx.android.synthetic.main.memo_list_item.view.*
 
-class MemoAdapter(memoClickListener: MemoClickListener): RecyclerView.Adapter<MemoAdapter.ViewHolder>(){
+class MemoAdapter(val context: Context, memoClickListener: MemoClickListener): RecyclerView.Adapter<MemoAdapter.ViewHolder>(){
 
     private var memoList: List<Memo> = ArrayList()
     private val listener = memoClickListener
@@ -37,15 +42,21 @@ class MemoAdapter(memoClickListener: MemoClickListener): RecyclerView.Adapter<Me
         val tvContents = view.memoListItem_tv_contents
 
         fun bind(memo: Memo){
+            val option = RequestOptions().centerCrop().transform(RoundedCorners(36))
+            Glide
+                    .with(context)
+                    .load(memo.thumbnailPath)
+                    .apply(option)
+                    .into(ivThumbnail)
             tvTitle.text = memo.title
             tvContents.text = memo.contents
             itemView.setOnClickListener {
-                listener.onMemoClick(memo)
+                listener.onMemoClick(memo, ivThumbnail)
             }
         }
     }
 
     interface MemoClickListener{
-        fun onMemoClick(memo: Memo)
+        fun onMemoClick(memo: Memo, imageView: ImageView)
     }
 }

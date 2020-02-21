@@ -18,11 +18,7 @@ class MemoViewModel(application: Application) : AndroidViewModel(application) {
         return repository.insertMemo(memo)
     }
 
-    fun insertImage(image: Image){
-        repository.insertImage(image)
-    }
-
-    fun updateMemo(memo: Memo){
+    fun updateMemo(memo: Memo) {
         repository.updateMemo(memo)
     }
 
@@ -30,11 +26,31 @@ class MemoViewModel(application: Application) : AndroidViewModel(application) {
         repository.deleteMemo(memo)
     }
 
-    fun getAllMemoImages(memoId: Long): LiveData<List<Image>>{
-        return repository.getAllMemoImages(memoId)
-    }
     fun getAllMemoList(): LiveData<List<Memo>> {
         return allMemoList
     }
 
+    fun validateMemo(title: String, contents: String): Boolean {
+        if (title.isEmpty() || contents.isEmpty()) {
+            return false
+        }
+        return true
+    }
+
+
+    fun insertImage(image: Image) {
+        repository.insertImage(image)
+    }
+
+    fun updateImage(image: Image) {
+        repository.updateImage(image)
+    }
+
+    fun deleteImage(image: Image) {
+        repository.deleteImage(image)
+    }
+
+    fun getAllMemoImages(memoId: Long): LiveData<List<Image>> {
+        return repository.getAllMemoImages(memoId)
+    }
 }

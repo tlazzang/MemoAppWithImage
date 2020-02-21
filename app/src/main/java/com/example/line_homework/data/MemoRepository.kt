@@ -33,12 +33,6 @@ class MemoRepository(application: Application) {
 //        }
 //    }
 
-    fun insertImage(image: Image) = runBlocking {
-        this.launch(Dispatchers.IO) {
-            memoDao.insertImage(image)
-        }
-    }
-
     fun updateMemo(memo: Memo) = runBlocking {
         this.launch(Dispatchers.IO) {
             memoDao.updateMemo(memo)
@@ -53,11 +47,30 @@ class MemoRepository(application: Application) {
         }
     }
 
+    fun getAllMemoList(): LiveData<List<Memo>> {
+        return allMemos
+    }
+
+    fun insertImage(image: Image) = runBlocking {
+        this.launch(Dispatchers.IO) {
+            memoDao.insertImage(image)
+        }
+    }
+
+    fun updateImage(image: Image) {
+
+    }
+
+    fun deleteImage(image: Image) {
+        runBlocking {
+            this.launch(Dispatchers.IO) {
+                memoDao.deleteImage(image)
+            }
+        }
+    }
+
 
     fun getAllMemoImages(memoId: Long): LiveData<List<Image>> {
         return memoDao.getAllMemoImages(memoId)
-    }
-    fun getAllMemoList(): LiveData<List<Memo>> {
-        return allMemos
     }
 }
