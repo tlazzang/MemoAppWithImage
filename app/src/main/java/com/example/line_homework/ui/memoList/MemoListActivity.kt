@@ -13,11 +13,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.line_homework.R
-import com.example.line_homework.data.Image
-import com.example.line_homework.data.Memo
+import com.example.line_homework.data.db.Image
+import com.example.line_homework.data.db.Memo
 import com.example.line_homework.ui.createEditMemo.CreateOrEditActivity
 import com.example.line_homework.ui.memoDetail.MemoDetailActivity
 import com.example.line_homework.util.Constants
+import com.example.line_homework.viewmodel.MemoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_memo_list.*
 
@@ -31,17 +32,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_list)
         initView()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = memoAdapter
-        fab_addMemo.setOnClickListener {
-            startActivityForResult(Intent(this, CreateOrEditActivity::class.java), Constants.CREATE_MEMO_REQUEST_CODE)
-        }
-
-        viewModel.getAllMemoList().observe(this, Observer {
-            if (it != null) {
-                memoAdapter.setMemoList(it)
-            }
-        })
+        observeLiveData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,8 +76,21 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
     fun initView() {
         recyclerView = memoListActivity_recyclerView
         memoAdapter = MemoAdapter(this, this)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = memoAdapter
         fab_addMemo = memoListActivity_fab
         viewModel = ViewModelProviders.of(this).get(MemoViewModel::class.java)
+        fab_addMemo.setOnClickListener {
+            startActivityForResult(Intent(this, CreateOrEditActivity::class.java), Constants.CREATE_MEMO_REQUEST_CODE)
+        }
+    }
+
+    fun observeLiveData(){
+        viewModel.getAllMemoList().observe(this, Observer {
+            if (it != null) {
+                memoAdapter.setMemoList(it)
+            }
+        })
     }
 
     override fun onMemoClick(memo: Memo, imageView: ImageView) {

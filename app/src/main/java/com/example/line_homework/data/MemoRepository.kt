@@ -2,6 +2,10 @@ package com.example.line_homework.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import com.example.line_homework.data.db.Image
+import com.example.line_homework.data.db.Memo
+import com.example.line_homework.data.db.MemoDao
+import com.example.line_homework.data.db.MemoDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

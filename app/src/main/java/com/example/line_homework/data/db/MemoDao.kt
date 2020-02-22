@@ -1,4 +1,4 @@
-package com.example.line_homework.data
+package com.example.line_homework.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

@@ -1,12 +1,12 @@
-package com.example.line_homework.ui.memoList
+package com.example.line_homework.viewmodel
 
 import android.app.Application
 //import android.arch.lifecycle.AndroidViewModel
 //import android.arch.lifecycle.LiveData
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.line_homework.data.Image
-import com.example.line_homework.data.Memo
+import com.example.line_homework.data.db.Image
+import com.example.line_homework.data.db.Memo
 import com.example.line_homework.data.MemoRepository
 
 class MemoViewModel(application: Application) : AndroidViewModel(application) {

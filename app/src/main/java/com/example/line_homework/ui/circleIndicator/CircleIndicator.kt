@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.example.line_homework.R
 
 class CircleIndicator : LinearLayout {
 

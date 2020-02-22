@@ -15,11 +15,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.example.line_homework.R
-import com.example.line_homework.data.Image
-import com.example.line_homework.data.Memo
+import com.example.line_homework.data.db.Image
+import com.example.line_homework.data.db.Memo
 import com.example.line_homework.ui.circleIndicator.CircleIndicator
 import com.example.line_homework.ui.createEditMemo.CreateOrEditActivity
-import com.example.line_homework.ui.memoList.MemoViewModel
+import com.example.line_homework.viewmodel.MemoViewModel
 import com.example.line_homework.util.Constants
 import kotlinx.android.synthetic.main.activity_memo_detail.*
 
@@ -32,7 +32,6 @@ class MemoDetailActivity : AppCompatActivity() {
     private lateinit var memo: Memo
     private lateinit var viewModel: MemoViewModel
 
-    private val REQUEST_CODE_EDIT_MEMO = 200
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_detail)
@@ -109,12 +108,12 @@ class MemoDetailActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_EDIT_MEMO && resultCode == Activity.RESULT_OK) {
-            val editedMemo = data?.getSerializableExtra("memo") as Memo
-            intent.putExtra("memo", editedMemo)
-            if(data.hasExtra("imagePathList")) {
-                val editedImageList = data?.getSerializableExtra("imagePathList") as ArrayList<Image>
-                intent.putExtra("imagePathList", editedImageList)
+        if (requestCode == Constants.EDIT_MEMO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val editedMemo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
+            intent.putExtra(Constants.PUT_EXTRA_MEMO_KEY, editedMemo)
+            if(data.hasExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY)) {
+                val editedImageList = data?.getSerializableExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY) as ArrayList<Image>
+                intent.putExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY, editedImageList)
             }
             setResult(Constants.RESULT_EDIT, intent)
             finish()
@@ -124,12 +123,12 @@ class MemoDetailActivity : AppCompatActivity() {
 
     fun editMemo() {
         val intent = Intent(this, CreateOrEditActivity::class.java)
-        intent.putExtra("memo", memo)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_MEMO)
+        intent.putExtra(Constants.PUT_EXTRA_MEMO_KEY, memo)
+        startActivityForResult(intent, Constants.EDIT_MEMO_REQUEST_CODE)
     }
 
     fun deleteMemo() {
-        intent.putExtra("memo", memo)
+        intent.putExtra(Constants.PUT_EXTRA_MEMO_KEY, memo)
         setResult(Constants.RESULT_DELETE, intent)
         finish()
     }

@@ -16,7 +16,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.example.line_homework.R
-import com.example.line_homework.data.Image
+import com.example.line_homework.data.db.Image
 import kotlinx.android.synthetic.main.image_list_item.view.*
 
 class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.ImageRemoveClickListener) : BaseAdapter() {
@@ -33,7 +33,7 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
                 .load(imageList[position].imagePath)
                 .listener(object: RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        Toast.makeText(context, "이미지를 불러올 수 없습니다", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.glide_image_load_error_message), Toast.LENGTH_SHORT).show()
                         return false
                     }
 

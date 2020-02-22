@@ -16,9 +16,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.features.ReturnMode
 import com.example.line_homework.R
-import com.example.line_homework.data.Image
-import com.example.line_homework.data.Memo
-import com.example.line_homework.ui.memoList.MemoViewModel
+import com.example.line_homework.data.db.Image
+import com.example.line_homework.data.db.Memo
+import com.example.line_homework.viewmodel.MemoViewModel
 import com.example.line_homework.util.Constants
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_create_or_edit.*
@@ -115,7 +115,7 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
                 setResult(RESULT_OK, intent)
                 finish()
             } else {
-                showToast("제목과 내용을 입력해주세요")
+                showToast(getString(R.string.memo_validation_error_message))
             }
         }
     }
@@ -148,10 +148,10 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
     fun showInputUrlDialog() {
         val dialog = AlertDialog.Builder(this)
         val et_url = EditText(this)
-        dialog.setTitle("URL로 이미지 추가")
-                .setMessage("URL을 입력하세요")
+        dialog.setTitle(getString(R.string.input_url_dialog_title))
+                .setMessage(getString(R.string.input_url_dialog_message))
                 .setView(et_url)
-                .setPositiveButton("확인") { dialog, id -> loadImageFromUrl(et_url.text.toString().trim()) }
+                .setPositiveButton(R.string.input_url_dialog_btn_ok) { dialog, id -> loadImageFromUrl(et_url.text.toString().trim()) }
                 .create()
         dialog.show()
     }
