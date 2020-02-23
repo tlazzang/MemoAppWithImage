@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.createEditMemo.CreateOrEditActivity">
 
+    <ProgressBar
+        android:id="@+id/createOrEditActivity_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
     <EditText
         android:id="@+id/createOrEditActivity_et_title"
         android:layout_width="match_parent"

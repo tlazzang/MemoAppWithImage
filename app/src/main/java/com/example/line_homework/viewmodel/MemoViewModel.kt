@@ -1,10 +1,19 @@
 package com.example.line_homework.viewmodel
 
 import android.app.Application
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.Log
 //import android.arch.lifecycle.AndroidViewModel
 //import android.arch.lifecycle.LiveData
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.line_homework.data.db.Image
 import com.example.line_homework.data.db.Memo
 import com.example.line_homework.data.MemoRepository

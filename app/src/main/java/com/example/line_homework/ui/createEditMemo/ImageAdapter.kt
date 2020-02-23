@@ -31,21 +31,12 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
         Glide
                 .with(context)
                 .load(imageList[position].imagePath)
-                .listener(object: RequestListener<Drawable>{
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        Toast.makeText(context, context.getString(R.string.glide_image_load_error_message), Toast.LENGTH_SHORT).show()
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        return false
-                    }
-                })
                 .apply(option)
                 .into(iv_image)
         val iv_remove = view.imageListItem_iv_remove
         iv_remove.setOnClickListener {
             listener.onImageRemoveClick(imageList[position])
+            removeImageAtPosition(position)
         }
         return view
     }
@@ -72,6 +63,25 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
         notifyDataSetChanged()
     }
 
+    fun loadImageUrl(image: Image){
+        Glide
+                .with(context)
+                .load(image.imagePath)
+                .listener(object: RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        Log.d("ImageAdapter", "onLoadFailed")
+                        listener.onImageLoadFail()
+                        return true
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        listener.onImageLoadSuccess(image)
+                        return true
+                    }
+                }).submit()
+
+    }
+
     fun addImage(image: Image){
         imageList.add(image)
         notifyDataSetChanged()
@@ -84,5 +94,9 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
 
     interface ImageRemoveClickListener{
         fun onImageRemoveClick(image: Image)
+
+        fun onImageLoadFail()
+
+        fun onImageLoadSuccess(image: Image)
     }
 }

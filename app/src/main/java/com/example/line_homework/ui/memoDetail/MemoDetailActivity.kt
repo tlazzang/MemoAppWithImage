@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -67,16 +68,13 @@ class MemoDetailActivity : AppCompatActivity() {
                 for (image in it) {
                     image.imagePath?.let { it1 -> list.add(it1) }
                 }
+                if(it.size == 0){
+                    hideViewPager()
+                }
                 val adapter = ImageAdapterForViewPager(list, this)
-                indicator.createDotPanel(it.size, R.drawable.indicator_dot_off, R.drawable.indicator_dot_on, 0)
                 viewPager.adapter = adapter
-                adapter.setResourceReadyListener(object : ImageAdapterForViewPager.OnResourceReadyListener {
-                    override fun onResourceReady() {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            startPostponedEnterTransition()
-                        }
-                    }
-                })
+
+                indicator.createDotPanel(it.size, R.drawable.indicator_dot_off, R.drawable.indicator_dot_on, 0)
                 Log.d("MemoDetailActivity", it.toString())
             })
         }
@@ -85,6 +83,10 @@ class MemoDetailActivity : AppCompatActivity() {
     fun bindMemo() {
         tv_title.setText(memo.title)
         tv_contents.setText(memo.contents)
+    }
+
+    fun hideViewPager(){
+        viewPager.visibility = View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -53,6 +53,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
             }
 
             Constants.MEMO_DETAIL_REQUEST_CODE -> {
+                //메모 수정인 경우
                 if (resultCode == Constants.RESULT_EDIT) {
                     val memo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
                     if (data.hasExtra(Constants.PUT_EXTRA_IMAGE_PATH_LIST_KEY)) {
@@ -64,6 +65,7 @@ class MemoListActivity : AppCompatActivity(), MemoAdapter.MemoClickListener {
                     }
                     viewModel.updateMemo(memo)
                 }
+                //메모 삭제인 경우
                 if (resultCode == Constants.RESULT_DELETE) {
                     val memo = data?.getSerializableExtra(Constants.PUT_EXTRA_MEMO_KEY) as Memo
                     viewModel.deleteMemo(memo)

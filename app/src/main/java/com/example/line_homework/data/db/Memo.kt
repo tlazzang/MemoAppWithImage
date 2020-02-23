@@ -11,5 +11,6 @@ data class Memo(
     var id: Long?,
     var title: String,
     var contents: String,
-    var thumbnailPath: String?
+    var thumbnailPath: String?,
+    var createTime: Long
 ): Serializable
