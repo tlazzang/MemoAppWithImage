@@ -124,6 +124,9 @@ class CreateOrEditActivity : AppCompatActivity(), ImageAdapter.ImageRemoveClickL
         et_contents.setText(memo.contents)
     }
 
+    /*
+        사용 라이브러리 = https://github.com/esafirm/android-image-picker
+     */
     fun pickPhoto() {
         ImagePicker.create(this)
                 .returnMode(ReturnMode.NONE) // set whether pick and / or camera action should return immediate result or not.

@@ -27,7 +27,7 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = LayoutInflater.from(context).inflate(R.layout.image_list_item, parent, false)
         val iv_image = view.imageListItem_iv_image
-        val option = RequestOptions().centerCrop().transform(RoundedCorners(36))
+        val option = RequestOptions().centerCrop().transform(RoundedCorners(36)).override(240,240)
         Glide
                 .with(context)
                 .load(imageList[position].imagePath)
@@ -79,7 +79,6 @@ class ImageAdapter(val context: Context, imageRemoveClickListener: ImageAdapter.
                         return true
                     }
                 }).submit()
-
     }
 
     fun addImage(image: Image){
